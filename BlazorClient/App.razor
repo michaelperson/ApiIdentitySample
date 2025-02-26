@@ -1,0 +1,42 @@
+﻿@* <Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router> *@
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        Navigation.NavigateTo($"login-microsoft?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+                    }
+                    else
+                    {
+                        <p>Vous n'êtes pas autorisé à accéder à cette ressource.</p>
+                    }
+                </NotAuthorized>
+                <Authorizing>
+                    <p>Vérification de l'autorisation...</p>
+                </Authorizing>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Non trouvé</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Désolé, cette adresse est introuvable.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

@@ -1,0 +1,26 @@
+﻿@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<RemoteAuthenticatorView Action="@Action">
+    <LoggingIn>
+        <p>Connexion en cours à Microsoft Entra ID...</p>
+    </LoggingIn>
+    <CompletingLoggingIn>
+        <p>Finalisation de la connexion...</p>
+    </CompletingLoggingIn>
+    <LogInFailed>
+        <p>Une erreur s'est produite lors de la connexion.</p>
+    </LogInFailed>
+    <LogOut>
+        <p>Déconnexion en cours...</p>
+    </LogOut>
+    <CompletingLogOut>
+        <p>Finalisation de la déconnexion...</p>
+    </CompletingLogOut>
+    <LogOutFailed>
+        <p>Une erreur s'est produite lors de la déconnexion.</p>
+    </LogOutFailed>
+    <UserProfile>
+        <p>Chargement du profil utilisateur...</p>
+    </UserProfile>
+</RemoteAuthenticatorView>
