@@ -10,10 +10,10 @@ namespace BlazorAuthApp.Client.Infra
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private readonly ILocalStorageService _localStorage;
+        private readonly ISessionStorageService _localStorage;
         private readonly IHttpClientFactory _httpClientFactory;
         private List<Claim> _claims;
-        public CustomAuthStateProvider(ILocalStorageService localStorage, IHttpClientFactory httpClient)
+        public CustomAuthStateProvider(ISessionStorageService localStorage, IHttpClientFactory httpClient)
         {
             _localStorage = localStorage;
             _httpClientFactory = httpClient;

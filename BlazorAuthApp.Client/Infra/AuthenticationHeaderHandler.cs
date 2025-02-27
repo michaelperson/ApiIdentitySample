@@ -1,20 +1,24 @@
 ﻿using BlazorAuthApp.Client.Services.Interfaces;
 using System.Net.Http.Headers;
 using System.Net;
+using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace BlazorAuthApp.Client.Infra
 {
     public class AuthenticationHeaderHandler : DelegatingHandler
     {
-        private readonly ILocalStorageService _localStorage;
+        private readonly ISessionStorageService _sessionStorage;
         private readonly IAuthService _authService;
+        private readonly IJSRuntime jSRuntime; 
         private bool _isRefreshing = false;
         private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-        public AuthenticationHeaderHandler(ILocalStorageService localStorage, IAuthService authService)
+        public AuthenticationHeaderHandler(ISessionStorageService sessionStorage, IAuthService authService, IJSRuntime jSRuntime )
         {
-            _localStorage = localStorage;
+            _sessionStorage = sessionStorage;
             _authService = authService;
+            this.jSRuntime = jSRuntime; 
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -46,8 +50,8 @@ namespace BlazorAuthApp.Client.Infra
                         catch
                         {
                             // En cas d'échec du refresh, nettoyer les tokens
-                            await _localStorage.RemoveItemAsync("authToken");
-                            await _localStorage.RemoveItemAsync("refreshToken");
+                            await _sessionStorage.RemoveItemAsync("authToken");
+                            await _sessionStorage.RemoveItemAsync("refreshToken");
                             throw;
                         }
 
@@ -65,11 +69,17 @@ namespace BlazorAuthApp.Client.Infra
 
         private async Task AddTokenToRequest(HttpRequestMessage request)
         {
-            var token = await _localStorage.GetItemAsync<string>("authToken");
+            var token = await _sessionStorage.GetItemAsync<string>("authToken");
             if (!string.IsNullOrEmpty(token))
             {
+                await jSRuntime.InvokeVoidAsync("console.log", token);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            } 
+            else
+            {
+                await jSRuntime.InvokeVoidAsync("fetch", request, new { credentials = "include" });
             }
+            
         }
     }
 }

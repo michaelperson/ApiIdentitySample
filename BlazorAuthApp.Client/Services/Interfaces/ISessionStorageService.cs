@@ -1,6 +1,6 @@
 ﻿namespace BlazorAuthApp.Client.Services.Interfaces
 {
-    public interface ILocalStorageService
+    public interface ISessionStorageService
     {
         Task<T> GetItemAsync<T>(string key);
         Task SetItemAsync<T>(string key, T value);

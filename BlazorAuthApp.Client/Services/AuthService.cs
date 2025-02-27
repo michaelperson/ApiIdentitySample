@@ -10,11 +10,11 @@ namespace BlazorAuthApp.Client.Services
     public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
-        private readonly ILocalStorageService _localStorage;
+        private readonly ISessionStorageService _localStorage;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly IJSRuntime JSRuntime;
 
-        public AuthService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider, IJSRuntime jSRuntime)
+        public AuthService(HttpClient httpClient, ISessionStorageService localStorage, AuthenticationStateProvider authStateProvider, IJSRuntime jSRuntime)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
@@ -56,6 +56,7 @@ namespace BlazorAuthApp.Client.Services
             // Rediriger vers la page de connexion Microsoft
             // Cette méthode ouvre une redirection dans le navigateur
             var absoluteUri = new Uri(_httpClient.BaseAddress, loginUrl).AbsoluteUri;
+
             await JSRuntime.InvokeVoidAsync("window.location.replace", absoluteUri);
 
             return true;
