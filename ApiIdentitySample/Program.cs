@@ -59,7 +59,6 @@ string connectionString = builder.Configuration["ConnectionStrings:Default"];
 /*Inject le dbcontext*/
 builder.Services.AddDbContext<IdentitySampleDbContext>(options => { options.UseSqlServer(connectionString); });
 /*Inject de l'Identity+  configuration du store pour les rôle, les users,...*/
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentitySampleDbContext>();
 builder.Services
     .AddIdentityApiEndpoints<ApplicationUser>()
     .AddRoles<IdentityRole>()
@@ -132,6 +131,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireAdministratorRole", policy =>
           policy.RequireRole("Administrator"));
 });
+/*Configuration des cors*/
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevPolicy", policy =>
@@ -156,6 +156,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapIdentityApi<ApplicationUser>().AllowAnonymous(); 
 app.MapEntraIdEndpoints();
+
 app.MapControllers();
 
 app.Run();
