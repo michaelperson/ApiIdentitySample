@@ -1,6 +1,8 @@
 ﻿using BlazorAuthApp.Client.Services.Interfaces;
+using BlazorAuthApp.Shared.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -10,7 +12,7 @@ namespace BlazorAuthApp.Client.Infra
     {
         private readonly ILocalStorageService _localStorage;
         private readonly IHttpClientFactory _httpClientFactory;
-        private IEnumerable<Claim> _claims;
+        private List<Claim> _claims;
         public CustomAuthStateProvider(ILocalStorageService localStorage, IHttpClientFactory httpClient)
         {
             _localStorage = localStorage;
@@ -48,10 +50,14 @@ namespace BlazorAuthApp.Client.Infra
 
         private async Task  ParseClaimsFromJwt(string jwt)
         {
+            _claims = new List<Claim>();
             //Remarque : Idenity utilise un  OAuth2 avec token opaque donc impossible du côté client de le décoder
             HttpClient client = _httpClientFactory.CreateClient("IdentitySampleApi");
-            HttpResponseMessage message =await client.GetAsync("/user-info");
-
+            UserInfoResponse message = await client.GetFromJsonAsync<UserInfoResponse>("/user-info");
+            foreach (ClaimInfo item in message?.claims)
+            {
+                _claims.Add(new Claim(item.type, item.value));
+            }
             _claims = new List<Claim>();
         }
 
