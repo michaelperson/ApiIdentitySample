@@ -1,0 +1,84 @@
+﻿@page "/register" 
+
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card mt-5">
+            <div class="card-header">
+                <h3>Inscription</h3>
+            </div>
+            <div class="card-body">
+                @if (showErrors)
+                {
+                    <div class="alert alert-danger">
+                        <p>@error</p>
+                    </div>
+                }
+
+                @if (registrationSuccessful)
+                {
+                    <div class="alert alert-success">
+                        <p>Inscription réussie ! Veuillez confirmer votre email puis <a href="/login">vous connecter</a>.</p>
+                    </div>
+                }
+                else
+                {
+                    <EditForm Model="@registerModel" OnValidSubmit="HandleRegistration">
+                        <DataAnnotationsValidator />
+
+                        <div class="form-group mb-3">
+                            <label for="email">Email :</label>
+                            <InputText id="email" @bind-Value="registerModel.Email" class="form-control" />
+                            <ValidationMessage For="@(() => registerModel.Email)" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="password">Mot de passe :</label>
+                            <InputText id="password" @bind-Value="registerModel.Password" type="password" class="form-control" />
+                            <ValidationMessage For="@(() => registerModel.Password)" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="confirmPassword">Confirmez le mot de passe :</label>
+                            <InputText id="confirmPassword" @bind-Value="confirmPassword" type="password" class="form-control" />
+                            @if (!string.IsNullOrEmpty(passwordMatchError))
+                            {
+                                <div class="text-danger">@passwordMatchError</div>
+                            }
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" disabled="@loading">
+                                @if (loading)
+                                {
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span> Inscription en cours...</span>
+                                }
+                                else
+                                {
+                                    <span>S'inscrire</span>
+                                }
+                            </button>
+                        </div>
+                    </EditForm>
+
+                    <div class="text-center mt-3">
+                        <span>ou</span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-outline-primary" @onclick="HandleMicrosoftLogin">
+                            <i class="fab fa-microsoft me-2"></i>S'inscrire avec Microsoft
+                        </button>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <a href="/login">Déjà inscrit ? Se connecter</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div> 

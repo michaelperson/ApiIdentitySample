@@ -4,6 +4,7 @@ using ApiIdentitySample.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiIdentitySample.Migrations
 {
     [DbContext(typeof(IdentitySampleDbContext))]
-    partial class IdentitySampleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250227075813_Autoriser les null pour AzureObjectId, AzureTenantId")]
+    partial class AutoriserlesnullpourAzureObjectIdAzureTenantId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

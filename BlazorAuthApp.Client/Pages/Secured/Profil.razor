@@ -1,0 +1,22 @@
+﻿@page "/secured/profil"
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.Authorization
+<h3>Profil</h3>
+@userInfo.name
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <p>You are authenticated</p>
+
+            <Button @onclick="Logout">Logout</Button> 
+            
+        </Authorized>
+        <NotAuthorized>
+             <p>No access</p>
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>  
+ 
+
+
+ 

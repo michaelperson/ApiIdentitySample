@@ -4,6 +4,7 @@ using ApiIdentitySample.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiIdentitySample.Migrations
 {
     [DbContext(typeof(IdentitySampleDbContext))]
-    partial class IdentitySampleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250226125622_Ajout des infos pour connexion via microsoft")]
+    partial class Ajoutdesinfospourconnexionviamicrosoft
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,9 +34,11 @@ namespace ApiIdentitySample.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AzureObjectId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AzureTenantId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -55,6 +60,10 @@ namespace ApiIdentitySample.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("MotDePasse")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -87,7 +96,8 @@ namespace ApiIdentitySample.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PKApplicationUser");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");

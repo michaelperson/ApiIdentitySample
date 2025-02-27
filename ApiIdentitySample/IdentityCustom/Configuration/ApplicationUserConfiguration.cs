@@ -7,18 +7,15 @@ namespace ApiIdentitySample.IdentityCustom.Configuration
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            builder.ToTable(nameof(ApplicationUser));
-
-            builder.HasKey(x => x.Id).HasName("PKApplicationUser");
-
             builder.Property(t => t.Pseudo)
                 .HasMaxLength(250).IsRequired(false);
-            builder.Property(t => t.MotDePasse)
-                .HasMaxLength(250).IsRequired(false);
 
-            builder.Property(t => t.Email).IsRequired(false).HasMaxLength(300);
-             
+            builder.Property(t => t.AzureObjectId).IsRequired(false);
+
+            builder.Property(t => t.AzureTenantId).IsRequired(false);
+
+
 
         }
-    }
+}
 }

@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiIdentitySample", "ApiIdentitySample\ApiIdentitySample.csproj", "{542ECA60-6719-4C92-8180-03F31749ACB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorAuthApp.Client", "BlazorAuthApp.Client\BlazorAuthApp.Client.csproj", "{A1048FC6-BFBE-463C-AFBB-4AA65AEC90A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorAuthApp.Shared", "BlazorAuthApp.Shared\BlazorAuthApp.Shared.csproj", "{A2A53854-0C09-439F-95F5-C15070816308}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{542ECA60-6719-4C92-8180-03F31749ACB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{542ECA60-6719-4C92-8180-03F31749ACB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{542ECA60-6719-4C92-8180-03F31749ACB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1048FC6-BFBE-463C-AFBB-4AA65AEC90A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1048FC6-BFBE-463C-AFBB-4AA65AEC90A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1048FC6-BFBE-463C-AFBB-4AA65AEC90A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1048FC6-BFBE-463C-AFBB-4AA65AEC90A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2A53854-0C09-439F-95F5-C15070816308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2A53854-0C09-439F-95F5-C15070816308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2A53854-0C09-439F-95F5-C15070816308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2A53854-0C09-439F-95F5-C15070816308}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -59,7 +59,10 @@ namespace ApiIdentitySample.Services
                     {
                         UserName = email,
                         Email = email,
-                        EmailConfirmed = true // Considéré comme confirmé car provenant de Entra ID
+                        EmailConfirmed = true, // Considéré comme confirmé car provenant de Entra ID
+                        DateInscription = DateTime.Now,
+                        AzureObjectId = objectId,
+                        AzureTenantId = tenantId
                     };
 
                     // Obtenir d'autres informations d'utilisateur si disponibles
@@ -68,10 +71,14 @@ namespace ApiIdentitySample.Services
                     var displayName = principal.FindFirstValue("name");
 
                     if (!string.IsNullOrEmpty(givenName))
-                        user.NormalizedUserName = givenName;
-
+                       { 
+                        user.UserName = givenName;
+                        user.Pseudo = givenName;
+                    }
                     if (!string.IsNullOrEmpty(surname))
+                    { 
                         user.Pseudo = surname;
+                    }
 
                     // Créer l'utilisateur
                     var createResult = await _userManager.CreateAsync(user);

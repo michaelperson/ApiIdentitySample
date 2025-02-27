@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,39 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(optionswag =>
+{
+    optionswag.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "ApiIdentity Sample API",
+        Description = "Exemple d'application Blazor .net8 + Identity",
+        Contact = new OpenApiContact
+        {
+            Name = "Contact",
+            Url = new Uri("https://www.cognitic.be/contactez-nous")
+        }
+
+
+    });
+    
+    //Jwt
+    // Bearer token authentication
+
+
+    optionswag.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    optionswag.OperationFilter<AddAuthHeaderOperationFilter>();
+
+
+});
 
 /*Configuration de Identity EF*/
 string connectionString = builder.Configuration["ConnectionStrings:Default"];
@@ -25,13 +60,19 @@ string connectionString = builder.Configuration["ConnectionStrings:Default"];
 builder.Services.AddDbContext<IdentitySampleDbContext>(options => { options.UseSqlServer(connectionString); });
 /*Inject de l'Identity+  configuration du store pour les rôle, les users,...*/
 //builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentitySampleDbContext>();
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>().AddEntityFrameworkStores<IdentitySampleDbContext>();
+builder.Services
+    .AddIdentityApiEndpoints<ApplicationUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<IdentitySampleDbContext>();
 
 builder.Services
     .AddAuthentication(options =>
     {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        // Utiliser Identity comme schéma par défaut
+        options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
+        options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
+        options.DefaultSignInScheme = IdentityConstants.BearerScheme;
+        options.DefaultScheme = IdentityConstants.BearerScheme;
     })
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
     .EnableTokenAcquisitionToCallDownstreamApi()
@@ -54,7 +95,7 @@ builder.Services.Configure<IdentityOptions>(
         o.User.RequireUniqueEmail = true;
 
         o.Tokens.AuthenticatorIssuer = builder.Configuration["IdentityOptions:Issuer"]; 
-       
+        
     }
     );
 builder.Services.AddScoped<EntraIdAccountService>();
@@ -85,16 +126,21 @@ builder.Services.AddTransient<IEmailSender, EmailSender>(s=> new EmailSender(bui
 /*Ajout de l'authorization*/
 builder.Services.AddAuthorization(options =>
 {
-    // Politique par défaut pour les endpoints nécessitant une authentification
-    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
+ 
 
     // Ajouter des politiques personnalisées si nécessaire
     options.AddPolicy("RequireAdministratorRole", policy =>
           policy.RequireRole("Administrator"));
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -104,11 +150,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("DevPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.MapIdentityApi<ApplicationUser>();
+app.MapIdentityApi<ApplicationUser>().AllowAnonymous(); 
 app.MapEntraIdEndpoints();
 app.MapControllers();
 
